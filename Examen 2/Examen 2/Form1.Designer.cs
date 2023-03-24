@@ -175,7 +175,7 @@ namespace Examen_2
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(62, 336);
+            this.label6.Location = new System.Drawing.Point(33, 336);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(83, 13);
             this.label6.TabIndex = 13;
