@@ -33,6 +33,7 @@ namespace Examen_2
                 MessageBox.Show("Usuario o contraseña incorrectos. Por favor intente de nuevo.");
             }
         }
+
     }
 
     public partial class Menu : Form
@@ -106,11 +107,6 @@ namespace Examen_2
             finally
             {
                 connection.Close();
-
-
-
-
-
 
 
             }
