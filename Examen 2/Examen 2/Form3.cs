@@ -10,41 +10,54 @@ using System.Windows.Forms;
 
 namespace Examen_2
 {
-    public partial class Form3 : Form
+    public partial class TicketForm : Form
     {
-        public Form3()
+        public TicketForm()
         {
             InitializeComponent();
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
+        private void btnSubmitTicket_Click(object sender, EventArgs e)
         {
-            // Crear la cadena de conexión a la base de datos
-            string connectionString = "server=localhost;database=tu_base_de_datos;uid=tu_usuario;password=tu_contraseña;";
+            // Obtener los datos del formulario de ticket
+            DateTime fecha = DateTime.Now;
+            string usuario = txtUsuario.Text;
+            string cliente = txtCliente.Text;
+            string tipoSoporte = cbTipoSoporte.Text;
+            string descripcionSolicitud = txtDescripcionSolicitud.Text;
+            string descripcionRespuesta = txtDescripcionRespuesta.Text;
+            decimal precio = decimal.Parse(txtPrecio.Text);
+            decimal impuesto = decimal.Parse(txtImpuesto.Text);
+            decimal descuento = decimal.Parse(txtDescuento.Text);
+            decimal total = precio + impuesto - descuento;
 
-            // Crear la consulta SQL para insertar el ticket
-            string query = "INSERT INTO tickets (fecha, usuario, cliente, tipo_soporte, descripcion_solicitud, descripcion_respuesta, precio, impuesto, descuento, total) " +
-                           "VALUES (@fecha, @usuario, @cliente, @tipo_soporte, @descripcion_solicitud, @descripcion_respuesta, @precio, @impuesto, @descuento, @total)";
+            // Guardar los datos en la base de datos MySQL
+            MySqlConnection connection = new MySqlConnection("Server=localhost;Database=mydatabase;Uid=myusername;Pwd=mypassword;");
+            connection.Open();
 
-            // Crear la conexión a la base de datos y el objeto de comando para ejecutar la consulta
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            using (MySqlCommand command = new MySqlCommand(query, connection))
-            {
-                // Establecer los valores de los parámetros de la consulta con los datos del formulario
-                command.Parameters.AddWithValue("@fecha", dtpFecha.Value);
-                command.Parameters.AddWithValue("@usuario", txtUsuario.Text);
-                command.Parameters.AddWithValue("@cliente", txtCliente.Text);
-                command.Parameters.AddWithValue("@tipo_soporte", cboTipoSoporte.SelectedItem.ToString());
-                command.Parameters.AddWithValue("@descripcion_solicitud", txtDescripcionSolicitud.Text);
-                command.Parameters.AddWithValue("@descripcion_respuesta", txtDescripcionRespuesta.Text);
-                command.Parameters.AddWithValue("@precio", nudPrecio.Value);
-                command.Parameters.AddWithValue("@impuesto", nudImpuesto.Value);
-                command.Parameters.AddWithValue("@descuento", descuento);
-                command.Parameters.AddWithValue("@total", total);
+            MySqlCommand command = new MySqlCommand("INSERT INTO tickets (fecha, usuario, cliente, tipo_soporte, descripcion_solicitud, descripcion_respuesta, precio, impuesto, descuento, total) VALUES (@fecha, @usuario, @cliente, @tipoSoporte, @descripcionSolicitud, @descripcionRespuesta, @precio, @impuesto, @descuento, @total)", connection);
+            command.Parameters.AddWithValue("@fecha", fecha);
+            command.Parameters.AddWithValue("@usuario", usuario);
+            command.Parameters.AddWithValue("@cliente", cliente);
+            command.Parameters.AddWithValue("@tipoSoporte", tipoSoporte);
+            command.Parameters.AddWithValue("@descripcionSolicitud", descripcionSolicitud);
+            command.Parameters.AddWithValue("@descripcionRespuesta", descripcionRespuesta);
+            command.Parameters.AddWithValue("@precio", precio);
+            command.Parameters.AddWithValue("@impuesto", impuesto);
+            command.Parameters.AddWithValue("@descuento", descuento);
+            command.Parameters.AddWithValue("@total", total);
 
-                command.ExecuteNonQuery();
+            command.ExecuteNonQuery();
 
-                connection.Close();
+            connection.Close();
 
-            }
+            // Mostrar un mensaje de confirmación
+            MessageBox.Show("El ticket ha sido creado exitosamente.", "Ticket creado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Cerrar el formulario de ticket
+            this.Close();
         }
+    }
+
+
+}
